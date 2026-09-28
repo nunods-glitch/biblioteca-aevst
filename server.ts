@@ -281,6 +281,59 @@ app.post("/api/usage/bulk-checkout", (req, res) => {
   }
 });
 
+// Bulk delete: permanently delete multiple usage logs (requires password "escola")
+app.post("/api/usage/bulk-delete", (req, res) => {
+  const { ids, password } = req.body;
+
+  if (password !== "escola") {
+    return res.status(403).json({ error: "Palavra-passe incorreta. Apenas administradores autorizados podem eliminar registos." });
+  }
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: "Nenhum registo selecionado para eliminar" });
+  }
+
+  try {
+    const deleteStmt = db.prepare("DELETE FROM usage_logs WHERE id = ?");
+    const deleteMany = db.transaction((logIds: number[]) => {
+      let count = 0;
+      for (const id of logIds) {
+        const result = deleteStmt.run(id);
+        count += result.changes;
+      }
+      return count;
+    });
+
+    const affected = deleteMany(ids);
+    res.json({ success: true, count: affected });
+  } catch (error) {
+    console.error("Error in bulk delete:", error);
+    res.status(500).json({ error: "Erro ao eliminar registos de utilização" });
+  }
+});
+
+// Single delete: permanently delete a single usage log (requires password "escola")
+app.post("/api/usage/:id/delete", (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  if (password !== "escola") {
+    return res.status(403).json({ error: "Palavra-passe incorreta. Apenas administradores autorizados podem eliminar registos." });
+  }
+
+  try {
+    const result = db.prepare("DELETE FROM usage_logs WHERE id = ?").run(id);
+    if (result.changes > 0) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: "Registo não encontrado" });
+    }
+  } catch (error) {
+    console.error("Error in single delete:", error);
+    res.status(500).json({ error: "Erro ao eliminar registo" });
+  }
+});
+
 app.get("/api/students/:id", (req, res) => {
   const student = db.prepare("SELECT * FROM students WHERE process_number = ?").get(req.params.id);
   if (student) {
