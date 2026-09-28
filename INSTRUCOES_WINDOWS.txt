@@ -1,0 +1,21 @@
+BIBLIOTECA AEVST - INSTRUÇÕES DE INSTALAÇÃO NO WINDOWS 11
+=========================================================
+
+1. Certifique-se de que tem o Node.js instalado no computador:
+   Pode descarregar gratuitamente em: https://nodejs.org (versão LTS recomendada).
+
+2. Extraia todos os ficheiros deste ZIP para uma pasta no seu computador
+   (exemplo: C:\Biblioteca-AEVST ou na pasta Documentos).
+
+3. Na pasta extraída, dê um duplo clique no ficheiro:
+   "Iniciar_Biblioteca.bat"
+
+   - Na primeira vez, o programa irá instalar os componentes necessários automaticamente.
+   - De seguida, o navegador abrirá automaticamente a aplicação em:
+     http://localhost:3000
+
+4. Para criar um atalho no Ambiente de Trabalho:
+   - Clique com o botão direito no ficheiro "Iniciar_Biblioteca.bat"
+   - Escolha "Mostrar mais opções" -> "Enviar para" -> "Ambiente de Trabalho (criar atalho)".
+
+Pronto a utilizar de forma 100% local e segura!
